@@ -47,7 +47,7 @@ export default function CalculatorForm() {
           />
           <div className="flex justify-end">
             <button type="submit" className="duo-button">
-              Bereken Compensatie
+              Bereken compensatie
             </button>
           </div>
         </form>
