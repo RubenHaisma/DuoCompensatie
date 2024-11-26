@@ -54,5 +54,5 @@ jobs:
               echo 'Session exists. Killing it and starting a new one...'
               tmux kill-session -t duocompensatie
             fi
-            tmux new-session -d -s duocompensatie 'cd /home/username/ && serve -s dist'
+            tmux new-session -d -s duocompensatie 'cd /home/username/ && serve -s dist -l 44179'
           "
