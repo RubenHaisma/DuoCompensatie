@@ -2,7 +2,11 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className="mt-16 py-8 bg-white border-t border-gray-200">
+    <footer
+      className="mt-16 py-8 bg-white border-t border-gray-200"
+      itemScope
+      itemType="https://schema.org/WPFooter"
+    >
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
@@ -17,6 +21,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-duo-blue hover:text-duo-orange font-medium transition-colors"
+              itemProp="creator"
             >
               IHN Solutions
             </a>
