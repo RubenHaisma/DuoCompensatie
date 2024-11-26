@@ -1,11 +1,11 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
 import { Calculator, Info } from 'lucide-react';
 import { StudentInfo } from '../types/calculator';
 import { calculateCompensation } from '../utils/calculations';
 import Tooltip from './Tooltip';
 import ResultsDisplay from './ResultsDisplay';
 import DonationButton from './DonationButton';
+import { useForm } from 'react-hook-form';
 
 export default function CalculatorForm() {
   const {
@@ -29,7 +29,7 @@ export default function CalculatorForm() {
         <div className="flex items-center gap-3 mb-6">
           <Calculator className="w-8 h-8 text-blue-600" />
           <h1 className="text-2xl font-bold text-gray-800">
-            Studiefinanciering Compensatie Calculator
+            Studiefinanciering compensatie berekenen
           </h1>
         </div>
 
@@ -127,7 +127,7 @@ export default function CalculatorForm() {
               <li>• Automatische meldingen starten januari 2024 voor in aanmerking komende afgestudeerden</li>
               <li>
                 <a
-                  href="https://duo.nl"
+                  href="https://duo.nl/tegemoetkoming-leenstelselstudenten/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline"

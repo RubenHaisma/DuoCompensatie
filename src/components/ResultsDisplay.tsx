@@ -1,4 +1,3 @@
-import React from 'react';
 import { CompensationResult } from '../types/calculator';
 import { EuroIcon, CheckCircle, XCircle } from 'lucide-react';
 
@@ -9,7 +8,7 @@ interface ResultsDisplayProps {
 export default function ResultsDisplay({ results }: ResultsDisplayProps) {
   return (
     <div className="mt-8 space-y-6">
-      <h2 className="text-xl font-semibold text-gray-800">Jouw Compensatie Resultaten</h2>
+      <h2 className="text-xl font-semibold text-gray-800">Jouw compensatie resultaten</h2>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="bg-gray-50 p-4 rounded-lg">

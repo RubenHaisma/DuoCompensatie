@@ -1,6 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js';
 import { EuroIcon } from 'lucide-react';
-import { STRIPE_PUBLIC_KEY} from '../config/stripe';
+import { STRIPE_PUBLIC_KEY} from '../../config/stripe';
 
 const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 
