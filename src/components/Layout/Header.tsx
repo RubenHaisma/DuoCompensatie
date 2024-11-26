@@ -1,18 +1,21 @@
-import { Calculator } from 'lucide-react';
-
 export default function Header() {
   return (
-    <header className="bg-duo-blue py-8">
-      <div className="container mx-auto flex flex-col items-center gap-4 px-6 text-center">
-        <div className="bg-white p-3 rounded-md">
-          <Calculator className="w-10 h-10 text-duo-blue" />
-        </div>
-        <h1 className="text-2xl md:text-3xl font-bold text-white">
+    <header className="bg-gradient-to-r from-duo-blue to-duo-dark-blue py-12">
+      <div className="container mx-auto flex flex-col items-center gap-6 px-6 text-center">
+        {/* Main Heading */}
+        <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-wide">
           Bereken jouw DUO compensatie
         </h1>
-        <p className="text-white text-sm md:text-base">
-          Ontdek binnen enkele seconden hoeveel geld jij terug krijgt van de (r)overheid.
+
+        {/* Subtitle with Highlight */}
+        <p className="text-white text-sm md:text-lg max-w-2xl">
+          Ontdek binnen enkele seconden hoeveel geld jij terug krijgt van de{' '}
+          <span className="bg-yellow-400 text-duo-blue px-1 py-0.5 rounded-md">
+            (r)overheid
+          </span>
+          .
         </p>
+
       </div>
     </header>
   );

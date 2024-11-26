@@ -38,7 +38,7 @@ export default function CalculatorForm() {
   return (
     <div className="space-y-6">
       <div className="duo-card">
-        <h2 className="text-xl font-bold mb-6">Bereken jouw compensatie</h2>
+        <h2 className="text-xl font-bold mb-6">Bereken hier jouw compensatie</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <FormFields
             register={register}
