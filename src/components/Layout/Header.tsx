@@ -12,7 +12,7 @@ export default function Header() {
         <p itemProp="description" className="text-white text-sm md:text-lg max-w-2xl">
           Ontdek binnen enkele seconden hoeveel geld jij terug krijgt van de{' '}
           <span className="bg-yellow-400 text-duo-blue px-1 py-0.5 rounded-md">
-            (r)overheid
+            overheid
           </span>
           .
         </p>
