@@ -7,17 +7,14 @@ interface FormFieldsProps {
   register: UseFormRegister<StudentInfo>;
   errors: FieldErrors<StudentInfo>;
   receivedFinance: boolean;
+  currentStep: number;
 }
 
-export default function FormFields({ register, errors, receivedFinance }: FormFieldsProps) {
-  return (
-    <div className="space-y-6">
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-duo-gray mb-2">
-            Startjaar studie
-            <Tooltip content="Het jaar waarin je bent begonnen met studeren (2015-2023)" />
-          </label>
+export default function FormFields({ register, errors, receivedFinance, currentStep }: FormFieldsProps) {
+  const renderStep1 = () => (
+    <div className="form-step">
+      <div>
+        <div className="relative">
           <input
             type="number"
             {...register('studyStartYear', {
@@ -26,19 +23,25 @@ export default function FormFields({ register, errors, receivedFinance }: FormFi
               max: 2023,
             })}
             className="duo-input"
+            placeholder="Bijvoorbeeld: 2015"
           />
-          {errors.studyStartYear && (
-            <p className="mt-1 text-sm text-red-600">
-              Vul een geldig jaar in tussen 2015 en 2023
-            </p>
-          )}
+          <div className="absolute right-3 top-3">
+            <Tooltip content="Het jaar waarin je bent begonnen met studeren (2015-2023)" />
+          </div>
         </div>
+        {errors.studyStartYear && (
+          <p className="mt-2 text-sm text-red-600">
+            Vul een geldig jaar in tussen 2015 en 2023
+          </p>
+        )}
+      </div>
+    </div>
+  );
 
-        <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-duo-gray mb-2">
-            Afstudeerjaar
-            <Tooltip content="Je werkelijke of verwachte afstudeerjaar" />
-          </label>
+  const renderStep2 = () => (
+    <div className="form-step">
+      <div>
+        <div className="relative">
           <input
             type="number"
             {...register('graduationYear', {
@@ -46,40 +49,72 @@ export default function FormFields({ register, errors, receivedFinance }: FormFi
               min: 2015,
             })}
             className="duo-input"
+            placeholder="Bijvoorbeeld: 2020"
           />
+          <div className="absolute right-3 top-3">
+            <Tooltip content="Je werkelijke of verwachte afstudeerjaar" />
+          </div>
         </div>
+        {errors.graduationYear && (
+          <p className="mt-2 text-sm text-red-600">
+            Vul een geldig afstudeerjaar in (vanaf 2015)
+          </p>
+        )}
       </div>
+    </div>
+  );
 
+  const renderStep3 = () => (
+    <div className="form-step">
       <div>
-        <label className="flex items-center gap-2 mb-4">
+        <label className="flex items-center gap-3 mb-6 cursor-pointer group">
           <input
             type="checkbox"
             {...register('receivedStudentFinance')}
-            className="rounded border-gray-300 text-duo-blue focus:ring-duo-blue"
+            className="w-5 h-5 rounded border-gray-300 text-blue-600 
+                     focus:ring-blue-500 focus:ring-2 focus:ring-offset-2"
           />
-          <span className="text-sm font-medium text-duo-gray">
-            Studiefinanciering ontvangen
+          <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
+            Ik heb studiefinanciering ontvangen
           </span>
           <Tooltip content="Heb je studiefinanciering ontvangen?" />
         </label>
-      </div>
 
-      {receivedFinance && (
-        <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-duo-gray mb-2">
-            Aantal maanden financiering
-            <Tooltip content="Aantal maanden dat je studiefinanciering hebt ontvangen" />
-          </label>
-          <input
-            type="number"
-            {...register('monthsWithFinance', {
-              required: true,
-              min: 0,
-            })}
-            className="duo-input"
-          />
-        </div>
-      )}
+        {receivedFinance && (
+          <div className="mt-6">
+            <div className="relative">
+              <input
+                type="number"
+                {...register('monthsWithFinance', {
+                  required: receivedFinance,
+                  min: 0,
+                })}
+                className="duo-input"
+                placeholder="Bijvoorbeeld: 48"
+              />
+              <div className="absolute right-3 top-3">
+                <Tooltip content="Aantal maanden dat je studiefinanciering hebt ontvangen" />
+              </div>
+            </div>
+            {errors.monthsWithFinance && (
+              <p className="mt-2 text-sm text-red-600">
+                Vul een geldig aantal maanden in
+              </p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
+
+  switch (currentStep) {
+    case 1:
+      return renderStep1();
+    case 2:
+      return renderStep2();
+    case 3:
+      return renderStep3();
+    default:
+      return null;
+  }
 }
