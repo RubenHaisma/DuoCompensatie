@@ -83,16 +83,19 @@ export default function FormFields({ register, errors, receivedFinance, currentS
         {receivedFinance && (
           <div className="mt-6">
             <div className="relative">
+              <div className="text-sm text-gray-700">
+                Aantal maanden:
+              </div>
               <input
                 type="number"
                 {...register('monthsWithFinance', {
                   required: receivedFinance,
                   min: 0,
                 })}
-                className="duo-input"
-                placeholder="Bijvoorbeeld: 48"
+                className="duo-input mt-1"
+                placeholder="Bijv. 48"
               />
-              <div className="absolute right-3 top-3">
+              <div className="absolute right-3 top-10">
                 <Tooltip content="Aantal maanden dat je studiefinanciering hebt ontvangen" />
               </div>
             </div>
