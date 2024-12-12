@@ -1,6 +1,7 @@
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import Calculator from './components/Calculator/CalculatorForm';
+import CookieBanner from './components/CookieBanner';
 
 function App() {
   return (
@@ -89,6 +90,8 @@ function App() {
           </div>
         </div>
       </main>
+
+      <CookieBanner />
 
       {/* Footer */}
       <Footer />
