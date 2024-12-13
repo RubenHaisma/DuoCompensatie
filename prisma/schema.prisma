@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CalculatorEntry {
+  id                        Int      @id @default(autoincrement())
+  basicGrantAmount          Float
+  voucherAmount             Float
+  totalAmount               Float
+  isEligibleForBasicGrant   Boolean
+  isEligibleForVoucher      Boolean
+  studyStartYear            Int
+  graduationYear            Int
+  monthsWithFinance         Int
+  createdAt                 DateTime @default(now())
+  amount                    Float
+}

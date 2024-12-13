@@ -30,9 +30,60 @@ export default function CalculatorForm() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const totalSteps = 3;
 
-  const onSubmit = (data: StudentInfo) => {
-    setResults(calculateCompensation(data));
+  const onSubmit = async (data: StudentInfo) => {
+    const calculatedResults = calculateCompensation(data);
+  
+    console.log('Calculated results:', calculatedResults);
+  
+    const {
+      basicGrantAmount,
+      voucherAmount,
+      totalAmount,
+      isEligibleForBasicGrant,
+      isEligibleForVoucher,
+    } = calculatedResults;
+  
+    const amount = basicGrantAmount + voucherAmount;
+  
+    // Ensure numeric fields are converted to integers
+    const studyStartYear = parseInt(data.studyStartYear as unknown as string, 10);
+    const graduationYear = parseInt(data.graduationYear as unknown as string, 10);
+    const monthsWithFinance = parseInt(data.monthsWithFinance as unknown as string, 10);
+  
+    try {
+      const response = await fetch('/api/submitCalculatorEntry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          basicGrantAmount,
+          voucherAmount,
+          totalAmount,
+          isEligibleForBasicGrant,
+          isEligibleForVoucher,
+          studyStartYear,
+          graduationYear,
+          monthsWithFinance,
+          amount,
+        }),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Entry successfully created:', result);
+      } else {
+        console.error('Failed to submit entry');
+      }
+  
+      setResults(calculatedResults);
+    } catch (error) {
+      console.error('Error submitting entry:', error);
+    }
   };
+  
+  
+  
 
   // Watch fields
   const receivedFinance = watch('receivedStudentFinance');
