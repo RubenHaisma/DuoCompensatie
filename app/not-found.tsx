@@ -9,24 +9,24 @@ export default function Custom404() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold mb-4 animate__animated animate__fadeIn">Oeps!</h1>
-        <p className="text-2xl mb-8 animate__animated animate__fadeIn animate__delay-1s">
-          We konden de pagina die je zocht niet vinden.
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-800">
+      <div className="text-center px-6">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-[#003b5c] mb-4">
+          Oeps! Pagina Niet Gevonden
+        </h1>
+        <p className="text-lg md:text-xl text-gray-600 mb-6">
+          Het lijkt erop dat de pagina die je zoekt niet bestaat of is verplaatst.
         </p>
-        <div className="animate__animated animate__fadeIn animate__delay-2s">
-          <Link href="/">
-            <button className="px-6 py-3 bg-yellow-400 text-black font-semibold rounded-full hover:bg-yellow-300 transition-colors">
-              Ga terug naar de Homepagina
-            </button>
-          </Link>
-        </div>
+        <Link href="/">
+          <button className="duo-button">
+            Ga terug naar de Homepagina
+          </button>
+        </Link>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 text-center py-4 text-sm opacity-50">
-        <p>Nog steeds verdwaald? Misschien moet je eens zoeken naar een eenhoorn?</p>
-      </div>
+      <footer className="absolute bottom-4 text-center text-xs text-gray-500">
+        <p>Kom je er niet uit? Misschien kun je contact opnemen met ons team!</p>
+      </footer>
     </div>
   );
 }
