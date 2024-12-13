@@ -55,6 +55,11 @@ export default function RootLayout({
     <html lang="nl">
       <head>
         <GoogleAnalytics />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9360527370960452"
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
