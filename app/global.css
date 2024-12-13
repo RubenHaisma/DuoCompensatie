@@ -10,8 +10,11 @@
     font-style: normal;
   }
 
+  html,
   body {
-    @apply bg-white font-sans text-gray-800 min-h-screen;
+    @apply bg-white font-sans text-gray-800 min-h-screen overflow-x-hidden;
+    margin: 0;
+    padding: 0;
   }
 
   h1, h2, h3, h4, h5, h6 {

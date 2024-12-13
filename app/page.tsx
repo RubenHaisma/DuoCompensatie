@@ -3,16 +3,16 @@ import Header from "@/components/Layout/Header";  // Adjust path according to yo
 import Footer from "@/components/Layout/Footer";  // Adjust path according to your folder structure
 import Calculator from "@/components/Calculator/CalculatorForm";
 import CookieBanner from "@/components/CookieBanner";  // Adjust path according to your folder structure
+import AdComponent from "@/components/ad/AdComponent";  // Import the AdComponent
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50 rounded-b">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-4 py-4">
-          <Header />
-        </div>
+      <header>
+        <Header />
       </header>
+
 
       {/* Main Content */}
       <main className="flex-grow py-8 md:py-12">
@@ -86,6 +86,14 @@ export default function Home() {
                     </a>
                   </li>
                 </ul>
+              </div>
+
+              {/* Ad Component */}
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4 text-center">Onze Partners</h2>
+                <div className="flex items-center justify-center">
+                  <AdComponent />
+                </div>
               </div>
             </aside>
           </div>

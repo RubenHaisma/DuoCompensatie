@@ -1,8 +1,7 @@
 export default function Header() {
   return (
     <header
-      className="py-12"
-      style={{ backgroundColor: '#003b5c' }} // Use the exact hex color
+      className="py-12 bg-[#003b5c] rounded-b-2xl w-full overflow-hidden"
       itemScope
       itemType="https://schema.org/WPHeader"
     >

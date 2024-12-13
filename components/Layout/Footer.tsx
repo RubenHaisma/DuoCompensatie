@@ -3,34 +3,30 @@ import React from 'react';
 export default function Footer() {
   return (
     <footer
-      className="mt-16 py-8 bg-white border-t border-gray-200"
+      className="mt-16 py-6 bg-[#003b5c] text-white rounded-t-2xl"
       itemScope
       itemType="https://schema.org/WPFooter"
     >
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <p className="text-sm text-gray-600">
-              © {new Date().getFullYear()} IHN - Solutions
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Gemaakt door</span>
+      <div className="max-w-4xl mx-auto text-center px-4">
+        {/* Copyright and Attribution */}
+        <div className="flex flex-col items-center space-y-2 md:flex-row md:justify-center md:space-y-0 md:space-x-4">
+          <p className="text-sm font-medium text-gray-300">
             <a
               href="https://ihn-solutions.nl"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-duo-blue hover:text-duo-orange font-medium transition-colors"
-              itemProp="creator"
+              className="text-sm font-medium text-gray-300 hover:underline"
             >
-              IHN Solutions
+              &copy; {new Date().getFullYear()} IHN - Solutions
             </a>
-          </div>
+          </p>
         </div>
-        <div className="mt-6 text-xs text-gray-500 text-center max-w-2xl mx-auto">
+
+        {/* Disclaimer */}
+        <p className="mt-4 text-xs font-light text-gray-400">
           Deze calculator is een onafhankelijk hulpmiddel en is niet geaffilieerd met DUO of de Nederlandse overheid.
           Alle berekeningen zijn gebaseerd op officiële informatie maar dienen alleen ter indicatie.
-        </div>
+        </p>
       </div>
     </footer>
   );
