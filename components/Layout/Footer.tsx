@@ -1,4 +1,4 @@
-import React from 'react';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -26,6 +26,17 @@ export default function Footer() {
         <p className="mt-4 text-xs font-light text-gray-400">
           Deze calculator is een onafhankelijk hulpmiddel en is niet geaffilieerd met DUO of de Nederlandse overheid.
           Alle berekeningen zijn gebaseerd op officiële informatie maar dienen alleen ter indicatie.
+        </p>
+
+        {/* Terms and Privacy */}
+        <p className="mt-4 text-xs font-light text-gray-400">
+          <Link href="/terms" legacyBehavior>
+            Terms
+          </Link>{' '}
+          en{' '}
+          <Link href="/privacy" legacyBehavior>
+            Privacy
+          </Link>
         </p>
       </div>
     </footer>
