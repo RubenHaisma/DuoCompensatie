@@ -4,8 +4,43 @@ import Footer from "@/components/Layout/Footer"; // Adjust path according to you
 import Calculator from "@/components/Calculator/CalculatorForm";
 import CookieBanner from "@/components/CookieBanner"; // Adjust path according to your folder structure
 import AdComponent from "@/components/ad/AdComponent"; // Import the AdComponent
+import HandigeLinks from "@/components/links"; // Import the new component
+import { AiOutlineInfoCircle, AiOutlineMail } from "react-icons/ai";
+import { FiExternalLink } from "react-icons/fi";
+import { HiOutlineArrowRight } from "react-icons/hi";
 
 export default function Home() {
+  const links = [
+    {
+      href: "https://duo.nl/tegemoetkoming-leenstelselstudenten/",
+      title: "Officiële DUO informatie",
+      icon: <AiOutlineInfoCircle className="w-5 h-5 text-blue-600" />,
+      bgColor: "bg-blue-50",
+      textColor: "text-blue-600",
+    },
+    {
+      href: "https://duo.nl/particulier/studiefinanciering/gift-of-terugbetalen.jsp",
+      title: "Terugbetalen studiefinanciering",
+      icon: <FiExternalLink className="w-5 h-5 text-green-600" />,
+      bgColor: "bg-green-50",
+      textColor: "text-green-600",
+    },
+    {
+      href: "https://duohelper.nl",
+      title: "DUO aflossing berekenen?",
+      icon: <AiOutlineInfoCircle className="w-5 h-5 text-yellow-600" />,
+      bgColor: "bg-yellow-50",
+      textColor: "text-yellow-600",
+    },
+    {
+      href: "mailto:contact@duocompensatie.nl",
+      title: "Contact",
+      icon: <AiOutlineMail className="w-5 h-5 text-red-600" />,
+      bgColor: "bg-red-50",
+      textColor: "text-red-600",
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 rounded-b">
       {/* Header */}
@@ -38,134 +73,8 @@ export default function Home() {
 
             {/* Sidebar */}
             <aside className="space-y-6">
-              {/* Quick Links Card */}
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  Handige Links
-                </h2>
-                <ul className="space-y-3">
-                  <li>
-                    <a
-                      href="https://duo.nl/tegemoetkoming-leenstelselstudenten/"
-                      className="flex items-center p-3 rounded-lg hover:bg-gray-50 group transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <span className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                        <svg
-                          className="w-5 h-5 text-blue-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          ></path>
-                        </svg>
-                      </span>
-                      <span className="ml-3 flex-grow font-medium text-gray-900">
-                        Officiële DUO informatie
-                      </span>
-                      <svg
-                        className="w-5 h-5 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 5l7 7-7 7"
-                        ></path>
-                      </svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://duo.nl/particulier/studiefinanciering/gift-of-terugbetalen.jsp"
-                      className="flex items-center p-3 rounded-lg hover:bg-gray-50 group transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <span className="flex-shrink-0 w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
-                        <svg
-                          className="w-5 h-5 text-green-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          ></path>
-                        </svg>
-                      </span>
-                      <span className="ml-3 flex-grow font-medium text-gray-900">
-                        Terugbetalen studiefinanciering
-                      </span>
-                      <svg
-                        className="w-5 h-5 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 5l7 7-7 7"
-                        ></path>
-                      </svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://duohelper.nl"
-                      className="flex items-center p-3 rounded-lg hover:bg-gray-50 group transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <span className="flex-shrink-0 w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center group-hover:bg-yellow-100 transition-colors">
-                        <svg
-                          className="w-5 h-5 text-yellow-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 8v8m0 0l3-3m-3 3l-3-3"
-                          ></path>
-                        </svg>
-                      </span>
-                      <span className="ml-3 flex-grow font-medium text-gray-900">
-                        DUO aflossing berekenen?
-                      </span>
-                      <svg
-                        className="w-5 h-5 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 5l7 7-7 7"
-                        ></path>
-                      </svg>
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              {/* Handige Links Card */}
+              <HandigeLinks links={links} />
 
               {/* Ad Component */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
