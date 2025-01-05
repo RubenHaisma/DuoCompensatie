@@ -8,6 +8,7 @@ import FormFields from './FormFields';
 import ResultsDisplay from './ResultsDisplay';
 import InfoSection from './InfoSection';
 import DonationButton from '../Payment/DonationButton_5';
+import GovernmentPaymentInfo from '../Redirect';
 
 export default function CalculatorForm() {
   const {
@@ -205,6 +206,8 @@ export default function CalculatorForm() {
           <ResultsDisplay results={results} />
         </div>
       )}
+
+      <GovernmentPaymentInfo />
 
       <div className="duo-card">
         <InfoSection />
