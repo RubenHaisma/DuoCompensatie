@@ -4,7 +4,7 @@ import { StudentInfo } from '../types/calculator';
 import { calculateCompensation } from '../utils/calculations';
 import Tooltip from './UI/Tooltip';
 import ResultsDisplay from './ResultsDisplay';
-import DonationButton from './DonationButton';
+import DonationButton from './Payment/DonationButton_1';
 import { useForm } from 'react-hook-form';
 
 export default function CalculatorForm() {

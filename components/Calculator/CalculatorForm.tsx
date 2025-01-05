@@ -7,7 +7,7 @@ import { calculateCompensation } from '../../utils/calculations';
 import FormFields from './FormFields';
 import ResultsDisplay from './ResultsDisplay';
 import InfoSection from './InfoSection';
-import DonationButton from '../Payment/DonationButton';
+import DonationButton from '../Payment/DonationButton_5';
 
 export default function CalculatorForm() {
   const {

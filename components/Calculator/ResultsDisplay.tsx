@@ -1,5 +1,6 @@
 import { CompensationResult } from '../../types/calculator';
 import { EuroIcon, CheckCircle, XCircle } from 'lucide-react';
+import DonationButton from '../Payment/DonationButton_1';
 import Tooltip from '../UI/Tooltip';
 
 interface ResultsDisplayProps {
@@ -61,6 +62,9 @@ export default function ResultsDisplay({ results }: ResultsDisplayProps) {
         </div>
         <p className="text-3xl font-bold text-[#ff6a13]">€{results.totalAmount.toFixed(2)}</p>
       </div>
+
+      {/* Donation Button */}
+      <DonationButton />
     </div>
   );
 }
