@@ -19,6 +19,28 @@ const CookieBanner: React.FC = () => {
 
     return () => clearTimeout(timer);
   }, [consent]);
+  
+  const handleAcceptCookies = () => {
+    // Ensure the `dataLayer` is initialized
+    window.dataLayer = window.dataLayer || [];
+  
+    // Define the `gtag` function
+    function gtag(command: string, action: string, params?: Record<string, any>) {
+      window.dataLayer.push(arguments);
+    }
+  
+    // Update consent state using Google Consent Mode
+    gtag('consent', 'update', {
+      ad_user_data: 'granted',
+      ad_personalization: 'granted',
+      ad_storage: 'granted',
+      analytics_storage: 'granted',
+    });
+  
+    acceptCookies();
+    setIsVisible(false);
+  };
+  
 
   const handleClose = () => {
     setIsVisible(false);
@@ -45,10 +67,7 @@ const CookieBanner: React.FC = () => {
             <div className="flex gap-3">
               <Button
                 size="sm"
-                onClick={() => {
-                  acceptCookies();
-                  handleClose();
-                }}
+                onClick={handleAcceptCookies}
                 className="bg-[#e17000] hover:bg-[#e17000]/90 text-white"
               >
                 Accepteer
