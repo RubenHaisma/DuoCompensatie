@@ -5,67 +5,59 @@ import Link from "next/link";
 import Footer from "@/components/Layout/Footer";
 
 const TermsAndConditions: React.FC = () => {
-
   return (
-    <div style={styles.page}>
+    <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <header style={styles.header}>
-        <h1 style={{...styles.title, color: 'white'}}>Algemene Voorwaarden van DuoCompensatie.nl</h1>
-        <p style={{...styles.date, color: 'white'}}><strong>Ingangsdatum:</strong> 01-12-2024</p>
+      <header className="bg-[#003b5c] text-white py-16 px-6 text-center rounded-b">
+        <h1 className="text-4xl font-bold text-white">Algemene Voorwaarden</h1>
+        <p className="mt-4 text-lg font-medium text-white">van DuoCompensatie.nl</p>
+        <p className="mt-2 text-sm">
+          <strong>Ingangsdatum:</strong> 01-12-2024
+        </p>
       </header>
 
       {/* Content */}
-      <main style={styles.content}>
-        <section>
-          <p>
-            Welkom bij <strong>DuoCompensatie.nl</strong>. Door gebruik te maken van onze website 
-            stemt u ermee in zich te houden aan de volgende algemene voorwaarden. 
-            Lees deze voorwaarden zorgvuldig door voordat u gebruik maakt van onze diensten. 
-            Indien u niet akkoord gaat, dient u de website niet te gebruiken.
-          </p>
+      <main className="flex-grow container mx-auto px-6 py-10">
+        <section className="bg-white rounded-lg shadow-md p-8 max-w-3xl mx-auto">
+          <IntroSection />
 
-          <h2 style={styles.subHeading}>1. Gebruik van de Website</h2>
-          <p>
-            U stemt ermee in <strong>DuoCompensatie.nl</strong> uitsluitend te gebruiken voor legitieme 
-            doeleinden en in overeenstemming met deze voorwaarden.
-          </p>
+          <TermsSection
+            title="1. Gebruik van de Website"
+            content="U stemt ermee in DuoCompensatie.nl uitsluitend te gebruiken voor legitieme doeleinden en in overeenstemming met deze voorwaarden."
+          />
 
-          <h2 style={styles.subHeading}>2. Verleende Diensten</h2>
-          <p>
-            DuoCompensatie.nl biedt informatie en tools met betrekking tot compensatie. 
-            Wij streven naar nauwkeurigheid, maar garanderen dit niet volledig.
-          </p>
+          <TermsSection
+            title="2. Verleende Diensten"
+            content="DuoCompensatie.nl biedt informatie en tools met betrekking tot compensatie. Wij streven naar nauwkeurigheid, maar garanderen dit niet volledig."
+          />
 
-          <h2 style={styles.subHeading}>3. Verplichtingen van Gebruikers</h2>
-          <p>
-            Gebruikers moeten correcte informatie verstrekken en zich houden aan alle 
-            toepasselijke wetgeving. Misbruik kan leiden tot juridische stappen.
-          </p>
+          <TermsSection
+            title="3. Verplichtingen van Gebruikers"
+            content="Gebruikers moeten correcte informatie verstrekken en zich houden aan alle toepasselijke wetgeving. Misbruik kan leiden tot juridische stappen."
+          />
 
-          <h2 style={styles.subHeading}>4. Intellectueel Eigendom</h2>
-          <p>
-            Alle inhoud op deze website, inclusief tekst en logo's, is eigendom van DuoCompensatie.nl.
-          </p>
+          <TermsSection
+            title="4. Intellectueel Eigendom"
+            content="Alle inhoud op deze website, inclusief tekst en logo's, is eigendom van DuoCompensatie.nl."
+          />
 
-          <h2 style={styles.subHeading}>5. Aansprakelijkheidsverklaring</h2>
-          <p>
-            Wij zijn niet aansprakelijk voor enige schade die voortvloeit uit het gebruik van 
-            deze website. Gebruik is volledig op eigen risico.
-          </p>
+          <TermsSection
+            title="5. Aansprakelijkheidsverklaring"
+            content="Wij zijn niet aansprakelijk voor enige schade die voortvloeit uit het gebruik van deze website. Gebruik is volledig op eigen risico."
+          />
 
-          <h2 style={styles.subHeading}>6. Wijzigingen</h2>
-          <p>
-            DuoCompensatie.nl behoudt zich het recht voor deze voorwaarden op elk moment te wijzigen. 
-            Wij raden aan regelmatig deze pagina te controleren.
-          </p>
+          <TermsSection
+            title="6. Wijzigingen"
+            content="DuoCompensatie.nl behoudt zich het recht voor deze voorwaarden op elk moment te wijzigen. Wij raden aan regelmatig deze pagina te controleren."
+          />
         </section>
       </main>
 
-      {/* Go Back Button */}
-      <div style={styles.buttonContainer}>
+      {/* Back Button */}
+      <div className="flex justify-center mt-10 mb-16">
         <Link href="/">
-          <button style={{ ...styles.button, backgroundColor: "#ff9900" }}>
-            <span style={{ color: 'white' }}>Terug naar vorige pagina</span>
+          <button className="bg-[#003b5c] text-white py-3 px-8 rounded-md text-lg hover:bg-blue-700 transition focus:ring-2 focus:ring-blue-400">
+            Terug naar de homepage
           </button>
         </Link>
       </div>
@@ -76,64 +68,21 @@ const TermsAndConditions: React.FC = () => {
   );
 };
 
-const styles = {
-  page: {
-    fontFamily: "Arial, sans-serif",
-    lineHeight: "1.6",
-    color: "#333",
-    backgroundColor: "#f9f9f9",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column" as const,
-    justifyContent: "space-between",
-  },
-  header: {
-    backgroundColor: "#003b5c",
-    color: "#fff",
-    padding: "20px",
-    textAlign: "center" as const,
-  },
-  title: {
-    margin: "0",
-    fontSize: "28px",
-  },
-  date: {
-    fontSize: "14px",
-    marginTop: "5px",
-  },
-  content: {
-    maxWidth: "800px",
-    margin: "20px auto",
-    padding: "20px",
-    backgroundColor: "#fff",
-    borderRadius: "8px",
-    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-  },
-  subHeading: {
-    fontSize: "20px",
-    marginTop: "20px",
-    marginBottom: "10px",
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "center",
-    margin: "20px 0",
-  },
-  button: {
-    backgroundColor: "#003b5c",
-    color: "#fff",
-    border: "none",
-    padding: "10px 20px",
-    borderRadius: "5px",
-    fontSize: "16px",
-    cursor: "pointer",
-  },
-  footer: {
-    backgroundColor: "#003b5c",
-    color: "#fff",
-    textAlign: "center" as const,
-    padding: "10px 20px",
-  },
-};
+// Subcomponent for reusable terms sections
+const TermsSection: React.FC<{ title: string; content: string }> = ({ title, content }) => (
+  <div className="mb-8">
+    <h2 className="text-xl font-semibold text-[#003b5c] mb-3">{title}</h2>
+    <p className="text-gray-700">{content}</p>
+  </div>
+);
+
+// Introductory section
+const IntroSection = () => (
+  <div className="mb-10">
+    <p className="text-gray-700 text-lg leading-relaxed">
+      Welkom bij <strong>DuoCompensatie.nl</strong>. Door gebruik te maken van onze website stemt u ermee in zich te houden aan de volgende algemene voorwaarden. Lees deze voorwaarden zorgvuldig door voordat u gebruik maakt van onze diensten. Indien u niet akkoord gaat, dient u de website niet te gebruiken.
+    </p>
+  </div>
+);
 
 export default TermsAndConditions;

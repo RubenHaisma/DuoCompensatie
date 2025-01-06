@@ -21,9 +21,8 @@ export default function CalculatorForm() {
   } = useForm<StudentInfo>({
     mode: 'onBlur',
     defaultValues: {
-      // No default value for studyStartYear
-      studyStartYear: undefined, // Prevent automatic filling
-      graduationYear: undefined, // Leave graduation year to be calculated manually
+      studyStartYear: undefined,
+      graduationYear: undefined,
     },
   });
 
@@ -31,11 +30,14 @@ export default function CalculatorForm() {
   const [currentStep, setCurrentStep] = React.useState(1);
   const totalSteps = 3;
 
+  // Ref for the ResultsDisplay section
+  const resultsRef = React.useRef<HTMLDivElement | null>(null);
+
   const onSubmit = async (data: StudentInfo) => {
     const calculatedResults = calculateCompensation(data);
-  
+
     console.log('Calculated results:', calculatedResults);
-  
+
     const {
       basicGrantAmount,
       voucherAmount,
@@ -43,14 +45,13 @@ export default function CalculatorForm() {
       isEligibleForBasicGrant,
       isEligibleForVoucher,
     } = calculatedResults;
-  
+
     const amount = basicGrantAmount + voucherAmount;
-  
-    // Ensure numeric fields are converted to integers
+
     const studyStartYear = parseInt(data.studyStartYear as unknown as string, 10);
     const graduationYear = parseInt(data.graduationYear as unknown as string, 10);
     const monthsWithFinance = parseInt(data.monthsWithFinance as unknown as string, 10);
-  
+
     try {
       const response = await fetch('/api/submitCalculatorEntry', {
         method: 'POST',
@@ -69,38 +70,39 @@ export default function CalculatorForm() {
           amount,
         }),
       });
-  
+
       if (response.ok) {
         const result = await response.json();
         console.log('Entry successfully created:', result);
       } else {
         console.error('Failed to submit entry');
       }
-  
+
       setResults(calculatedResults);
+
+      // Scroll to results section on mobile
+      if (window.innerWidth <= 768 && resultsRef.current) {
+        console.log('Scrolling to ResultsDisplay...');
+        resultsRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     } catch (error) {
       console.error('Error submitting entry:', error);
     }
   };
-  
-  
-  
 
   // Watch fields
   const receivedFinance = watch('receivedStudentFinance');
   const studyStartYear = watch('studyStartYear');
   const graduationYear = watch('graduationYear');
 
-  // Automatically update graduation year when study start year changes
   React.useEffect(() => {
     if (studyStartYear) {
       const expectedGraduationYear = Number(studyStartYear) + 4;
       setValue('graduationYear', expectedGraduationYear);
-      trigger('graduationYear'); // Validate the new value
+      trigger('graduationYear');
     }
   }, [studyStartYear, setValue, trigger]);
 
-  // Calculate Aantal Maanden Financiering dynamically
   React.useEffect(() => {
     if (receivedFinance && studyStartYear && graduationYear) {
       const months = Math.max((graduationYear - studyStartYear) * 12, 0);
@@ -202,7 +204,7 @@ export default function CalculatorForm() {
       </div>
 
       {results && (
-        <div className="duo-card">
+        <div ref={resultsRef} className="duo-card">
           <ResultsDisplay results={results} />
         </div>
       )}
