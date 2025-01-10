@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { StudentInfo } from '../../types/calculator';
-import Tooltip from '../ui/Tooltip';
+import Tooltip from '../UI/Tooltip';
 
 interface FormFieldsProps {
   register: UseFormRegister<StudentInfo>;
