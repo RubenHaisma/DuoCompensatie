@@ -2,7 +2,7 @@ import React from 'react';
 import { Calculator, Info } from 'lucide-react';
 import { StudentInfo } from '../types/calculator';
 import { calculateCompensation } from '../utils/calculations';
-import Tooltip from './UI/Tooltip';
+import Tooltip from './ui/Tooltip';
 import ResultsDisplay from './ResultsDisplay';
 import DonationButton from './Payment/DonationButton_1';
 import { useForm } from 'react-hook-form';

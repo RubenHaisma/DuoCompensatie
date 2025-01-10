@@ -1,7 +1,7 @@
 import { CompensationResult } from '../../types/calculator';
 import { EuroIcon, CheckCircle, XCircle } from 'lucide-react';
 import DonationButton from '../Payment/DonationButton_1';
-import Tooltip from '../UI/Tooltip';
+import Tooltip from '../ui/Tooltip';
 
 interface ResultsDisplayProps {
   results: CompensationResult;
