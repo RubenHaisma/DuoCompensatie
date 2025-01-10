@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Cookie } from 'lucide-react';
-import { Button } from '@/components/UI/button';
+import { Button } from '@/components/ui/button';
 import { useCookieConsent } from '../hooks/use-cookie-consent';
 
 const CookieBanner: React.FC = () => {
