@@ -34,8 +34,11 @@ export default function SetupPage() {
 
   const handleSubmit = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Not authenticated');
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !sessionData?.session) {
+            throw new Error('Not authenticated');
+        }
+        const session = sessionData.session;
 
       // Update profile
       await supabase
@@ -48,23 +51,26 @@ export default function SetupPage() {
 
       // Create loan details
       await supabase
-        .from('loan_details')
-        .upsert({
-          user_id: session.user.id,
-          initial_balance: parseFloat(formData.initialBalance),
-          current_balance: parseFloat(formData.currentBalance),
-          interest_rate: parseFloat(formData.interestRate),
-          monthly_payment: parseFloat(formData.initialBalance) * parseFloat(formData.interestRate),
-          repayment_scheme: formData.repaymentScheme,
-          annual_income: formData.annualIncome ? parseFloat(formData.annualIncome) : null,
-          partner_income: formData.partnerIncome ? parseFloat(formData.partnerIncome) : null,
-          start_date: formData.startDate,
-        });
+      .from('loan_details')
+      .upsert({
+        user_id: session.user.id,
+        initial_balance: parseFloat(formData.initialBalance || '0'),
+        current_balance: parseFloat(formData.currentBalance || '0'),
+        interest_rate: parseFloat(formData.interestRate || '0'),
+        monthly_payment:
+          parseFloat(formData.initialBalance || '0') *
+          parseFloat(formData.interestRate || '0'),
+        repayment_scheme: formData.repaymentScheme || 'SF35',
+        annual_income: formData.annualIncome ? parseFloat(formData.annualIncome) : null,
+        partner_income: formData.partnerIncome ? parseFloat(formData.partnerIncome) : null,
+        start_date: formData.startDate || new Date().toISOString(),
+      });    
 
       router.push('/dashboard');
     } catch (error) {
-      console.error('Error:', error);
-    }
+        console.error('Error submitting setup data:', error);
+        alert('An error occurred while submitting your setup data. Please try again.');
+            }
   };
 
   const renderStep = () => {

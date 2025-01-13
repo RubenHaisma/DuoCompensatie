@@ -20,23 +20,17 @@ export async function login(formData: FormData) {
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(data.email)) {
-    return { error: 'Invalid email' };
+    return { error: 'Invalid email format' };
   }
 
   // Password validation
   if (data.password.length < 6) {
-    return { error: 'Password is too short' };
+    return { error: 'Password must be at least 6 characters' };
   }
 
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    if (error.message.includes('Email not confirmed')) {
-      return { error: 'Email not confirmed' };
-    }
-    if (error.message.includes('Invalid login credentials')) {
-      return { error: 'Invalid login credentials' };
-    }
     return { error: error.message };
   }
 
@@ -61,35 +55,42 @@ export async function signup(formData: FormData) {
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(data.email)) {
-    return { error: 'Invalid email' };
+    return { error: 'Invalid email format' };
   }
 
   // Password validation
   if (data.password.length < 6) {
-    return { error: 'Password is too short' };
+    return { error: 'Password must be at least 6 characters' };
   }
 
   // Username validation
   if (data.username.length < 3) {
-    return { error: 'Username is too short' };
+    return { error: 'Username must be at least 3 characters' };
   }
 
-  const { error: signUpError } = await supabase.auth.signUp({
+  const { data: { user }, error: signUpError } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
+    options: {
+      data: {
+        full_name: data.username,
+      },
+    },
   });
 
   if (signUpError) {
-    if (signUpError.message.includes('already registered')) {
-      return { error: 'User already registered' };
-    }
     return { error: signUpError.message };
   }
 
+  if (!user) {
+    return { error: 'Failed to create user' };
+  }
+
+  // Create profile
   const { error: profileError } = await supabase
     .from('profiles')
     .insert({
-      id: (await supabase.auth.getUser()).data.user?.id,
+      id: user.id,
       email: data.email.trim(),
       full_name: data.username.trim(),
     });
@@ -99,5 +100,5 @@ export async function signup(formData: FormData) {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/dashboard');
+  redirect('/dashboard/setup');
 }

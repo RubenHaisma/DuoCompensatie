@@ -4,37 +4,48 @@ import { updateSession } from '@/utils/supabase/middelware';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow unrestricted access to public routes and static files
-  if (
-    pathname.startsWith('/_next') || // Next.js system files
-    pathname.startsWith('/api/') || // API routes
-    pathname.startsWith('/static/') || // Static files
-    pathname === '/login' ||
-    pathname === '/register' ||
-    pathname === '/' ||
-    pathname === '/terms' ||
-    pathname === '/privacy'
-  ) {
+  // Allow public routes
+  const publicRoutes = ['/login', '/register', '/', '/terms', '/privacy'];
+  const isPublicRoute = publicRoutes.includes(pathname);
+
+  if (isPublicRoute || pathname.startsWith('/_next')) {
     return NextResponse.next();
   }
 
-  // Update session
-  const response = await updateSession(request);
-  const { supabase } = await response.json();
-  const supabaseClient = supabase;
+  try {
+    const { response, supabase } = await updateSession(request);
+    const { data: { session } } = await supabase.auth.getSession();
 
-  if (!supabaseClient) {
-    // If no session, redirect to login
+    if (!session) {
+      const redirectUrl = new URL('/login', request.url);
+      redirectUrl.searchParams.set('redirectTo', pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // Prevent loop for /dashboard/setup
+    if (pathname === '/dashboard/setup') {
+      return response;
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', session.user.id)
+      .single();
+
+    if (!profile?.full_name) {
+      const redirectUrl = new URL('/dashboard/setup', request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    return response;
+  } catch (err) {
+    console.error('Middleware Error:', err);
     const redirectUrl = new URL('/login', request.url);
     return NextResponse.redirect(redirectUrl);
   }
-
-  // Continue with the response if authenticated
-  return response;
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ['/dashboard/:path*', '/api/:path*'],
 };

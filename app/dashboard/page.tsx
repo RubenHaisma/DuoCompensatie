@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; // To handle redirection
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
 
@@ -16,12 +17,17 @@ export default function DashboardPage() {
   const [loanDetails, setLoanDetails] = useState<LoanDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function initializeLoanDetails() {
       try {
+        // Get the current session
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session) return;
+        if (!session) {
+          router.push('/login'); // Redirect to login if no session
+          return;
+        }
 
         // Try to fetch existing loan details
         const { data: existingLoan, error: fetchError } = await supabase
@@ -31,7 +37,7 @@ export default function DashboardPage() {
           .single();
 
         if (fetchError && fetchError.code !== 'PGRST116') {
-          throw fetchError;
+          throw fetchError; // Handle unexpected errors
         }
 
         if (!existingLoan) {
@@ -41,9 +47,9 @@ export default function DashboardPage() {
             initial_balance: 0,
             current_balance: 0,
             monthly_payment: 0,
-            interest_rate: 0.02, // 2% default interest rate
-            repayment_scheme: 'SF35', // Default scheme
-            start_date: new Date().toISOString()
+            interest_rate: 0.02, // Default interest rate: 2%
+            repayment_scheme: 'SF35', // Default repayment scheme
+            start_date: new Date().toISOString(),
           };
 
           const { data: newLoan, error: insertError } = await supabase
@@ -58,7 +64,7 @@ export default function DashboardPage() {
           setLoanDetails(existingLoan);
         }
       } catch (err) {
-        console.error('Error:', err);
+        console.error('Error fetching loan details:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
@@ -66,14 +72,14 @@ export default function DashboardPage() {
     }
 
     initializeLoanDetails();
-  }, []);
+  }, [router]);
 
   if (loading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-red-500">Error: {error}</div>;
+    return <div className="text-red-500 text-center mt-4">Error: {error}</div>;
   }
 
   return (
@@ -83,23 +89,34 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="p-6">
           <h3 className="text-sm font-medium text-muted-foreground">Current Balance</h3>
-          <p className="text-2xl font-bold">€{loanDetails?.current_balance.toLocaleString()}</p>
+          <p className="text-2xl font-bold">
+            €{loanDetails?.current_balance.toLocaleString()}
+          </p>
         </Card>
         <Card className="p-6">
           <h3 className="text-sm font-medium text-muted-foreground">Monthly Payment</h3>
-          <p className="text-2xl font-bold">€{loanDetails?.monthly_payment.toLocaleString()}</p>
+          <p className="text-2xl font-bold">
+            €{loanDetails?.monthly_payment.toLocaleString()}
+          </p>
         </Card>
         <Card className="p-6">
           <h3 className="text-sm font-medium text-muted-foreground">Interest Rate</h3>
-          <p className="text-2xl font-bold">{(loanDetails?.interest_rate ?? 0) * 100}%</p>
+          <p className="text-2xl font-bold">
+            {(loanDetails?.interest_rate ?? 0) * 100}%
+          </p>
         </Card>
       </div>
 
       <Card className="p-6">
         <h2 className="text-xl font-semibold mb-4">Loan Details</h2>
         <div className="space-y-2">
-          <p><strong>Repayment Scheme:</strong> {loanDetails?.repayment_scheme}</p>
-          <p><strong>Initial Balance:</strong> €{loanDetails?.initial_balance.toLocaleString()}</p>
+          <p>
+            <strong>Repayment Scheme:</strong> {loanDetails?.repayment_scheme}
+          </p>
+          <p>
+            <strong>Initial Balance:</strong> €
+            {loanDetails?.initial_balance.toLocaleString()}
+          </p>
         </div>
       </Card>
     </div>
