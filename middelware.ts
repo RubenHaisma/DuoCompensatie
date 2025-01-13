@@ -5,13 +5,26 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow unrestricted access to public routes
-  if (['/login', '/register', '/auth', '/api/auth/callback'].some(route => pathname.startsWith(route))) {
+  if (['/login', '/register', '/api/auth/callback'].some(route => pathname.startsWith(route))) {
+    console.log('[Middleware] Public route accessed:', pathname);
     return NextResponse.next();
   }
 
-  // Restrict access to protected routes
-  return await updateSession(request);
+  console.log('[Middleware] Protected route accessed:', pathname);
+
+  // Update session for protected routes
+  const response = await updateSession(request);
+
+  // Ensure the response includes cookies for session persistence
+  if (!response.cookies.has('supabase-auth-token')) {
+    console.log('[Middleware] No session token found, redirecting to /login...');
+    const url = new URL('/login', request.url);
+    return NextResponse.redirect(url);
+  }
+
+  return response;
 }
+
 
 export const config = {
   matcher: [

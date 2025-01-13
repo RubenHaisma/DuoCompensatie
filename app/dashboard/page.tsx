@@ -1,58 +1,29 @@
 'use client';
 
-import React from "react";
-import dynamic from "next/dynamic";
-import { Card } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase";
+import { getLoanData } from '@/utils/supabase/data'; // Ensure the path is correct
+import { notFound } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import { Card } from '@/components/ui/card';
 
-// Dynamically import recharts components to prevent SSR issues
-const ResponsiveContainer = dynamic(() => import("recharts").then((mod) => mod.ResponsiveContainer), { ssr: false });
-const LineChart = dynamic(() => import("recharts").then((mod) => mod.LineChart), { ssr: false });
-import { Line } from "recharts";
-import { XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-
-async function getLoanData() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return null;
-
-  const { data: loanDetails } = await supabase
-    .from('loan_details')
-    .select('*')
-    .eq('user_id', session.user.id)
-    .single();
-
-  const { data: payments } = await supabase
-    .from('payments')
-    .select('*')
-    .eq('user_id', session.user.id)
-    .order('payment_date', { ascending: true });
-
-  return {
-    loanDetails,
-    payments,
-  };
-}
+// Dynamically import Recharts components
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
+const LineChart = dynamic(() => import('recharts').then(mod => mod.LineChart), { ssr: false });
+import { Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 export default async function DashboardPage() {
-  const data = await getLoanData();
-  
-  const currentBalance = data?.loanDetails?.current_balance || 35000;
-  const monthlyPayment = data?.loanDetails?.monthly_payment || 200;
-  const totalInterestPaid = data?.payments?.reduce((sum, payment) => 
-    sum + (payment.amount * (data.loanDetails?.interest_rate || 0.02)), 0
-  ) || 1200;
+  const data = await getLoanData(); // Fetch data server-side
 
-  const balanceHistory = data?.payments?.map((payment, index) => ({
-    month: new Date(payment.payment_date).toLocaleString('default', { month: 'short' }),
-    balance: currentBalance - (index * monthlyPayment),
-  })) || [
-    { month: "Jan", balance: 35000 },
-    { month: "Feb", balance: 34800 },
-    { month: "Mar", balance: 34600 },
-    { month: "Apr", balance: 34400 },
-    { month: "May", balance: 34200 },
-    { month: "Jun", balance: 34000 },
-  ];
+  if (!data.loanDetails) {
+    notFound();
+  }
+
+  const { loanDetails, payments } = data;
+  const balanceHistory = payments
+    ? payments.map((payment, index) => ({
+        month: new Date(payment.payment_date).toLocaleString('default', { month: 'short' }),
+        balance: loanDetails.current_balance - index * loanDetails.monthly_payment,
+      }))
+    : [];
 
   return (
     <div className="space-y-6">
@@ -60,22 +31,18 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Current Balance
-          </h3>
-          <p className="text-2xl font-bold">€{currentBalance.toLocaleString()}</p>
+          <h3 className="text-sm font-medium text-muted-foreground">Current Balance</h3>
+          <p className="text-2xl font-bold">€{loanDetails.current_balance.toLocaleString()}</p>
         </Card>
         <Card className="p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Monthly Payment
-          </h3>
-          <p className="text-2xl font-bold">€{monthlyPayment.toLocaleString()}</p>
+          <h3 className="text-sm font-medium text-muted-foreground">Monthly Payment</h3>
+          <p className="text-2xl font-bold">€{loanDetails.monthly_payment.toLocaleString()}</p>
         </Card>
         <Card className="p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Interest Paid
-          </h3>
-          <p className="text-2xl font-bold">€{totalInterestPaid.toLocaleString()}</p>
+          <h3 className="text-sm font-medium text-muted-foreground">Interest Paid</h3>
+          <p className="text-2xl font-bold">
+            €{(payments ? payments.reduce((sum, payment) => sum + payment.amount * loanDetails.interest_rate, 0) : 0).toLocaleString()}
+          </p>
         </Card>
       </div>
 
@@ -89,12 +56,7 @@ export default async function DashboardPage() {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip formatter={(value) => `€${value.toLocaleString()}`} />
-                <Line
-                  type="monotone"
-                  dataKey="balance"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={2}
-                />
+                <Line type="monotone" dataKey="balance" stroke="hsl(var(--primary))" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           )}
