@@ -7,27 +7,44 @@ import { createClient } from '@/utils/supabase/server';
 export async function login(formData: FormData) {
   const supabase = await createClient();
 
-  console.log('[Login] Starting login process');
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   };
-  console.log('[Login] Form data:', data);
+
+  // Validate input
+  if (!data.email || !data.password) {
+    return { error: 'Missing required fields' };
+  }
+
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(data.email)) {
+    return { error: 'Invalid email' };
+  }
+
+  // Password validation
+  if (data.password.length < 6) {
+    return { error: 'Password is too short' };
+  }
 
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    console.error('[Login] Error logging in:', error.message);
-    return redirect('/error');
+    if (error.message.includes('Email not confirmed')) {
+      return { error: 'Email not confirmed' };
+    }
+    if (error.message.includes('Invalid login credentials')) {
+      return { error: 'Invalid login credentials' };
+    }
+    return { error: error.message };
   }
 
-  console.log('[Login] Login successful, redirecting to dashboard');
   revalidatePath('/', 'layout');
-  return redirect('/dashboard');
+  redirect('/dashboard');
 }
 
 export async function signup(formData: FormData) {
-  console.log('[Signup] Starting signup process');
   const supabase = await createClient();
 
   const data = {
@@ -36,46 +53,51 @@ export async function signup(formData: FormData) {
     username: formData.get('username') as string,
   };
 
-  console.log('[Signup] Form data:', data);
-
+  // Validate input
   if (!data.email || !data.password || !data.username) {
-    console.error('[Signup] Validation error: All fields are required');
-    throw new Error('All fields are required');
+    return { error: 'Missing required fields' };
   }
 
-  const { data: authData, error: signUpError } = await supabase.auth.signUp({
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(data.email)) {
+    return { error: 'Invalid email' };
+  }
+
+  // Password validation
+  if (data.password.length < 6) {
+    return { error: 'Password is too short' };
+  }
+
+  // Username validation
+  if (data.username.length < 3) {
+    return { error: 'Username is too short' };
+  }
+
+  const { error: signUpError } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
   });
 
   if (signUpError) {
-    console.error('[Signup] Error signing up:', signUpError);
-    return redirect('/error');
-  }
-
-  console.log('[Signup] User signed up successfully:', authData);
-
-  const user = authData.user;
-
-  if (!user) {
-    console.error('[Signup] User registration failed');
-    throw new Error('User registration failed. Please try again.');
+    if (signUpError.message.includes('already registered')) {
+      return { error: 'User already registered' };
+    }
+    return { error: signUpError.message };
   }
 
   const { error: profileError } = await supabase
     .from('profiles')
     .insert({
-      id: user.id,
+      id: (await supabase.auth.getUser()).data.user?.id,
       email: data.email.trim(),
       full_name: data.username.trim(),
     });
 
   if (profileError) {
-    console.error('[Signup] Error creating profile:', profileError);
-    return redirect('/error');
+    return { error: profileError.message };
   }
 
-  console.log('[Signup] Profile created successfully for user:', user.id);
   revalidatePath('/', 'layout');
-  return redirect('/dashboard');
+  redirect('/dashboard');
 }
