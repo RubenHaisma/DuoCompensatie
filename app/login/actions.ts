@@ -14,28 +14,22 @@ export async function login(formData: FormData) {
   };
   console.log('[Login] Form data:', data);
 
-  const { data: session, error } = await supabase.auth.signInWithPassword(data);
+  const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
     console.error('[Login] Error logging in:', error.message);
-    redirect('/error');
-  }
-
-  if (!session) {
-    console.error('[Login] Session not created. Something went wrong.');
-    redirect('/error');
+    return redirect('/error');
   }
 
   console.log('[Login] Login successful, redirecting to dashboard');
-  redirect('/dashboard');
+  revalidatePath('/', 'layout');
+  return redirect('/dashboard');
 }
-
 
 export async function signup(formData: FormData) {
   console.log('[Signup] Starting signup process');
   const supabase = await createClient();
 
-  // Extract and validate form data
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
@@ -49,7 +43,6 @@ export async function signup(formData: FormData) {
     throw new Error('All fields are required');
   }
 
-  // Step 1: Sign up the user
   const { data: authData, error: signUpError } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
@@ -57,7 +50,7 @@ export async function signup(formData: FormData) {
 
   if (signUpError) {
     console.error('[Signup] Error signing up:', signUpError);
-    redirect('/error');
+    return redirect('/error');
   }
 
   console.log('[Signup] User signed up successfully:', authData);
@@ -69,24 +62,20 @@ export async function signup(formData: FormData) {
     throw new Error('User registration failed. Please try again.');
   }
 
-  // Step 2: Add the user to the `profiles` table
   const { error: profileError } = await supabase
     .from('profiles')
     .insert({
-      id: user.id, // Use the user ID from authentication
+      id: user.id,
       email: data.email.trim(),
       full_name: data.username.trim(),
     });
 
   if (profileError) {
     console.error('[Signup] Error creating profile:', profileError);
-    redirect('/error');
+    return redirect('/error');
   }
 
   console.log('[Signup] Profile created successfully for user:', user.id);
-
-  // Step 3: Redirect to the dashboard
-  revalidatePath('/');
-  console.log('[Signup] Redirecting to dashboard');
-  redirect('/dashboard');
+  revalidatePath('/', 'layout');
+  return redirect('/dashboard');
 }

@@ -16,7 +16,7 @@ export default function Register() {
 
     startTransition(async () => {
       try {
-        await signup(formData); // Calls the server action
+        await signup(formData);
       } catch (e: any) {
         setError(e.message || 'Er is iets misgegaan.');
       }

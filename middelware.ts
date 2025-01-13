@@ -4,27 +4,34 @@ import { updateSession } from '@/utils/supabase/middelware';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow unrestricted access to public routes
-  if (['/login', '/register', '/api/auth/callback'].some(route => pathname.startsWith(route))) {
-    console.log('[Middleware] Public route accessed:', pathname);
+  // Allow unrestricted access to public routes and static files
+  if (
+    pathname.startsWith('/_next') || // Next.js system files
+    pathname.startsWith('/api/') || // API routes
+    pathname.startsWith('/static/') || // Static files
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname === '/' ||
+    pathname === '/terms' ||
+    pathname === '/privacy'
+  ) {
     return NextResponse.next();
   }
 
-  console.log('[Middleware] Protected route accessed:', pathname);
-
-  // Update session for protected routes
+  // Update session
   const response = await updateSession(request);
+  const { supabase } = await response.json();
+  const supabaseClient = supabase;
 
-  // Ensure the response includes cookies for session persistence
-  if (!response.cookies.has('supabase-auth-token')) {
-    console.log('[Middleware] No session token found, redirecting to /login...');
-    const url = new URL('/login', request.url);
-    return NextResponse.redirect(url);
+  if (!supabaseClient) {
+    // If no session, redirect to login
+    const redirectUrl = new URL('/login', request.url);
+    return NextResponse.redirect(redirectUrl);
   }
 
+  // Continue with the response if authenticated
   return response;
 }
-
 
 export const config = {
   matcher: [

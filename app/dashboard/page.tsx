@@ -1,29 +1,80 @@
 'use client';
 
-import { getLoanData } from '@/utils/supabase/data'; // Ensure the path is correct
-import { notFound } from 'next/navigation';
-import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
+import { supabase } from '@/lib/supabase';
 
-// Dynamically import Recharts components
-const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
-const LineChart = dynamic(() => import('recharts').then(mod => mod.LineChart), { ssr: false });
-import { Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+interface LoanDetails {
+  initial_balance: number;
+  current_balance: number;
+  monthly_payment: number;
+  interest_rate: number;
+  repayment_scheme: string;
+}
 
-export default async function DashboardPage() {
-  const data = await getLoanData(); // Fetch data server-side
+export default function DashboardPage() {
+  const [loanDetails, setLoanDetails] = useState<LoanDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!data.loanDetails) {
-    notFound();
+  useEffect(() => {
+    async function initializeLoanDetails() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+
+        // Try to fetch existing loan details
+        const { data: existingLoan, error: fetchError } = await supabase
+          .from('loan_details')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .single();
+
+        if (fetchError && fetchError.code !== 'PGRST116') {
+          throw fetchError;
+        }
+
+        if (!existingLoan) {
+          // Create initial loan details if none exist
+          const initialLoan = {
+            user_id: session.user.id,
+            initial_balance: 0,
+            current_balance: 0,
+            monthly_payment: 0,
+            interest_rate: 0.02, // 2% default interest rate
+            repayment_scheme: 'SF35', // Default scheme
+            start_date: new Date().toISOString()
+          };
+
+          const { data: newLoan, error: insertError } = await supabase
+            .from('loan_details')
+            .insert([initialLoan])
+            .select()
+            .single();
+
+          if (insertError) throw insertError;
+          setLoanDetails(newLoan);
+        } else {
+          setLoanDetails(existingLoan);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    initializeLoanDetails();
+  }, []);
+
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
-  const { loanDetails, payments } = data;
-  const balanceHistory = payments
-    ? payments.map((payment, index) => ({
-        month: new Date(payment.payment_date).toLocaleString('default', { month: 'short' }),
-        balance: loanDetails.current_balance - index * loanDetails.monthly_payment,
-      }))
-    : [];
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -32,34 +83,23 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="p-6">
           <h3 className="text-sm font-medium text-muted-foreground">Current Balance</h3>
-          <p className="text-2xl font-bold">€{loanDetails.current_balance.toLocaleString()}</p>
+          <p className="text-2xl font-bold">€{loanDetails?.current_balance.toLocaleString()}</p>
         </Card>
         <Card className="p-6">
           <h3 className="text-sm font-medium text-muted-foreground">Monthly Payment</h3>
-          <p className="text-2xl font-bold">€{loanDetails.monthly_payment.toLocaleString()}</p>
+          <p className="text-2xl font-bold">€{loanDetails?.monthly_payment.toLocaleString()}</p>
         </Card>
         <Card className="p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">Interest Paid</h3>
-          <p className="text-2xl font-bold">
-            €{(payments ? payments.reduce((sum, payment) => sum + payment.amount * loanDetails.interest_rate, 0) : 0).toLocaleString()}
-          </p>
+          <h3 className="text-sm font-medium text-muted-foreground">Interest Rate</h3>
+          <p className="text-2xl font-bold">{(loanDetails?.interest_rate ?? 0) * 100}%</p>
         </Card>
       </div>
 
       <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Balance History</h2>
-        <div className="h-[300px]">
-          {balanceHistory.length > 0 && (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={balanceHistory}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip formatter={(value) => `€${value.toLocaleString()}`} />
-                <Line type="monotone" dataKey="balance" stroke="hsl(var(--primary))" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          )}
+        <h2 className="text-xl font-semibold mb-4">Loan Details</h2>
+        <div className="space-y-2">
+          <p><strong>Repayment Scheme:</strong> {loanDetails?.repayment_scheme}</p>
+          <p><strong>Initial Balance:</strong> €{loanDetails?.initial_balance.toLocaleString()}</p>
         </div>
       </Card>
     </div>
