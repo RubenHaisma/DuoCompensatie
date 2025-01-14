@@ -45,6 +45,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-gray-50 rounded-b">
       {/* Header */}
       <header>
+      <script src="https://alwingulla.com/88/tag.min.js" data-zone="125332" async data-cfasync="false"></script>
         <Header />
       </header>
 
