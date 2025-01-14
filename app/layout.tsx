@@ -73,7 +73,6 @@ export default function RootLayout({
   return (
     <html lang="nl">
       <head>
-      <script src="https://alwingulla.com/88/tag.min.js" data-zone="125332" async data-cfasync="false"></script>
         <GoogleAnalytics />
         {/* AdSense Script */}
         <script
